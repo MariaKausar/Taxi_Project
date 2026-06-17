@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
+import { sendBookingOwnerEmail } from "../email.server";
 import { getSupabaseServerForWrites } from "../supabase.server";
 
 const bookingInput = z.object({
@@ -43,6 +44,14 @@ export const createBooking = createServerFn({ method: "POST" })
         process.env.NODE_ENV === "production"
           ? "Failed to save booking"
           : `Failed to save booking: ${detail}`,
+      );
+    }
+
+    const emailResult = await sendBookingOwnerEmail(data);
+    if (!emailResult.sent) {
+      console.warn(
+        "[createBooking] Booking saved but owner email was not sent.",
+        emailResult.detail ?? emailResult.reason,
       );
     }
 
