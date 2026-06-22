@@ -1,6 +1,8 @@
+"use client";
+
 import { useState } from "react";
 import { MapPin, Calendar, Users, Briefcase, ArrowRight, Check, User, Phone } from "lucide-react";
-import { createBooking } from "@/lib/api/bookings.functions";
+import { createBooking } from "@/lib/actions/bookings";
 import { useT } from "@/i18n/LanguageContext";
 
 interface Props { compact?: boolean }
@@ -104,16 +106,14 @@ export function BookingForm({ compact = false }: Props) {
     setError(null);
     try {
       await createBooking({
-        data: {
-          pickup,
-          destination: dest,
-          pickup_date: date || null,
-          pickup_time: time || null,
-          passengers: passengers ? Number(passengers) : null,
-          luggage: luggage ? Number(luggage) : null,
-          customer_name: name || null,
-          customer_phone: phone || null,
-        },
+        pickup,
+        destination: dest,
+        pickup_date: date || null,
+        pickup_time: time || null,
+        passengers: passengers ? Number(passengers) : null,
+        luggage: luggage ? Number(luggage) : null,
+        customer_name: name || null,
+        customer_phone: phone || null,
       });
     } catch {
       setSubmitting(false);

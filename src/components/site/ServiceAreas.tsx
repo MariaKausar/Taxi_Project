@@ -1,3 +1,5 @@
+"use client";
+
 import { MapPin, Navigation } from "lucide-react";
 import { Section, SectionHeader } from "@/components/site/Section";
 import { useT } from "@/i18n/LanguageContext";

@@ -26,7 +26,14 @@ export function getClientSupabaseEnv(): {
   url: string | undefined;
   publishableKey: string | undefined;
 } {
-  const env = import.meta.env as EnvRecord;
+  const env: EnvRecord = {
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    VITE_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    VITE_SUPABASE_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+  };
 
   return {
     url: getSupabaseUrlFromEnv(env),

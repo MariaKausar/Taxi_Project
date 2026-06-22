@@ -52,17 +52,7 @@ function getSmtpConfig() {
 }
 
 function isEdgeRuntime() {
-  if (process.versions?.node) {
-    return false;
-  }
-
-  return (
-    process.env.CF_PAGES === "1" ||
-    process.env.CLOUDFLARE_PAGES === "1" ||
-    process.env.NITRO_PRESET === "cloudflare" ||
-    process.env.NITRO_PRESET === "cloudflare_pages" ||
-    process.env.NITRO_PRESET === "cloudflare_module"
-  );
+  return process.env.NEXT_RUNTIME === "edge";
 }
 
 function formatValue(value: string | number | null | undefined) {

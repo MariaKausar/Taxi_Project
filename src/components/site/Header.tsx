@@ -1,6 +1,10 @@
-import { Link } from "@tanstack/react-router";
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Phone, Menu, X } from "lucide-react";
 import { useState } from "react";
+
 import { cn } from "@/lib/utils";
 import { useT } from "@/i18n/LanguageContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";
@@ -8,22 +12,27 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 type NavLink = {
   key: string;
   label: string;
-  to: "/" | "/booking" | "/about" | "/contact";
-  hash?: string;
+  href: string;
   exact?: boolean;
 };
 
 export function Header() {
   const [open, setOpen] = useState(false);
   const { t } = useT();
+  const pathname = usePathname();
 
   const navLinks: NavLink[] = [
-    { key: "home", to: "/", label: t("nav_home"), exact: true },
-    { key: "book", to: "/booking", label: t("nav_book") },
-    { key: "areas", to: "/", hash: "service-areas", label: t("nav_areas") },
-    { key: "about", to: "/about", label: t("nav_about") },
-    { key: "contact", to: "/contact", label: t("nav_contact") },
+    { key: "home", href: "/", label: t("nav_home"), exact: true },
+    { key: "book", href: "/booking", label: t("nav_book") },
+    { key: "areas", href: "/#service-areas", label: t("nav_areas") },
+    { key: "about", href: "/about", label: t("nav_about") },
+    { key: "contact", href: "/contact", label: t("nav_contact") },
   ];
+
+  function isActive(link: NavLink) {
+    if (link.href.includes("#")) return false;
+    return link.exact ? pathname === link.href : pathname.startsWith(link.href);
+  }
 
   const linkClass =
     "rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground";
@@ -31,7 +40,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/85 backdrop-blur-lg">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center gap-2.5">
+        <Link href="/" className="flex items-center gap-2.5">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg gradient-brand shadow-glow">
             <span className="text-base font-black text-brand-foreground">E</span>
           </div>
@@ -45,11 +54,8 @@ export function Header() {
           {navLinks.map((l) => (
             <Link
               key={l.key}
-              to={l.to}
-              hash={l.hash}
-              className={linkClass}
-              activeProps={{ className: "text-foreground bg-secondary" }}
-              activeOptions={{ exact: l.exact }}
+              href={l.href}
+              className={cn(linkClass, isActive(l) && "bg-secondary text-foreground")}
             >
               {l.label}
             </Link>
@@ -66,6 +72,7 @@ export function Header() {
             <span>+49 1785 183559</span>
           </a>
           <button
+            type="button"
             onClick={() => setOpen((o) => !o)}
             className="flex h-10 w-10 items-center justify-center rounded-md text-foreground lg:hidden"
             aria-label="Toggle menu"
@@ -79,19 +86,19 @@ export function Header() {
         className={cn(
           "overflow-hidden border-t border-border/60 bg-background lg:hidden",
           open ? "max-h-96" : "max-h-0",
-          "transition-[max-height] duration-300"
+          "transition-[max-height] duration-300",
         )}
       >
         <nav className="flex flex-col gap-1 p-4">
           {navLinks.map((l) => (
             <Link
               key={l.key}
-              to={l.to}
-              hash={l.hash}
+              href={l.href}
               onClick={() => setOpen(false)}
-              className="rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-              activeProps={{ className: "text-foreground bg-secondary" }}
-              activeOptions={{ exact: l.exact }}
+              className={cn(
+                "rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground",
+                isActive(l) && "bg-secondary text-foreground",
+              )}
             >
               {l.label}
             </Link>
