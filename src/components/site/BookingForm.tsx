@@ -5,6 +5,9 @@ import { useT } from "@/i18n/LanguageContext";
 
 interface Props { compact?: boolean }
 
+const MIN_PHONE_DIGITS = 6;
+const MAX_PHONE_DIGITS = 15;
+
 const initialFormState = {
   pickup: "",
   dest: "",
@@ -16,8 +19,41 @@ const initialFormState = {
   phone: "",
 };
 
+function getLocalDateString(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function countPhoneDigits(value: string) {
+  return value.replace(/\D/g, "").length;
+}
+
+function sanitizePhoneInput(value: string) {
+  const cleaned = value.replace(/[^\d+\s()-]/g, "");
+  let digits = 0;
+  let result = "";
+
+  for (const char of cleaned) {
+    if (/\d/.test(char)) {
+      if (digits >= MAX_PHONE_DIGITS) continue;
+      digits += 1;
+    }
+    result += char;
+  }
+
+  return result;
+}
+
+function isPickupInPast(date: string, time: string) {
+  const pickupAt = new Date(`${date}T${time || "00:00"}`);
+  return pickupAt < new Date();
+}
+
 export function BookingForm({ compact = false }: Props) {
   const { t } = useT();
+  const minPickupDate = getLocalDateString();
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,6 +83,22 @@ export function BookingForm({ compact = false }: Props) {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (submitting || submitted) return;
+
+    const phoneDigits = countPhoneDigits(phone);
+    if (phoneDigits < MIN_PHONE_DIGITS || phoneDigits > MAX_PHONE_DIGITS) {
+      setError(t("bf_phone_invalid"));
+      return;
+    }
+
+    if (date < minPickupDate) {
+      setError(t("bf_date_past"));
+      return;
+    }
+
+    if (isPickupInPast(date, time)) {
+      setError(t("bf_time_past"));
+      return;
+    }
 
     setSubmitting(true);
     setError(null);
@@ -105,7 +157,19 @@ export function BookingForm({ compact = false }: Props) {
           </Field>
           <div className="grid grid-cols-2 gap-3">
             <Field icon={<Calendar className="h-4 w-4" />} label={t("bf_date")}>
-              <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required disabled={submitting} className="w-full bg-transparent text-sm font-medium text-foreground focus:outline-none disabled:opacity-60" />
+              <input
+                type="date"
+                value={date}
+                min={minPickupDate}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  if (next && next < minPickupDate) return;
+                  setDate(next);
+                }}
+                required
+                disabled={submitting}
+                className="w-full bg-transparent text-sm font-medium text-foreground focus:outline-none disabled:opacity-60"
+              />
             </Field>
             <Field icon={<Calendar className="h-4 w-4" />} label={t("bf_time")}>
               <input type="time" value={time} onChange={(e) => setTime(e.target.value)} required disabled={submitting} className="w-full bg-transparent text-sm font-medium text-foreground focus:outline-none disabled:opacity-60" />
@@ -127,7 +191,18 @@ export function BookingForm({ compact = false }: Props) {
             <input value={name} onChange={(e) => setName(e.target.value)} required disabled={submitting} placeholder={t("bf_name_ph")} className="w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground focus:outline-none disabled:opacity-60" />
           </Field>
           <Field icon={<Phone className="h-4 w-4" />} label={t("bf_phone")}>
-            <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required disabled={submitting} placeholder="+49…" className="w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground focus:outline-none disabled:opacity-60" />
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(sanitizePhoneInput(e.target.value))}
+              required
+              disabled={submitting}
+              inputMode="tel"
+              autoComplete="tel"
+              maxLength={24}
+              placeholder="+49…"
+              className="w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground focus:outline-none disabled:opacity-60"
+            />
           </Field>
 
           <button

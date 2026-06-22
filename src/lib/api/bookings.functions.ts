@@ -7,12 +7,37 @@ import { getSupabaseServerForWrites } from "../supabase.server";
 const bookingInput = z.object({
   pickup: z.string().min(1),
   destination: z.string().min(1),
-  pickup_date: z.string().nullable().optional(),
+  pickup_date: z
+    .string()
+    .nullable()
+    .optional()
+    .refine(
+      (value) => {
+        if (!value) return true;
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const day = String(today.getDate()).padStart(2, "0");
+        return value >= `${year}-${month}-${day}`;
+      },
+      { message: "Pickup date cannot be in the past" },
+    ),
   pickup_time: z.string().nullable().optional(),
   passengers: z.number().int().min(1).max(4).nullable().optional(),
   luggage: z.number().int().min(0).max(4).nullable().optional(),
   customer_name: z.string().nullable().optional(),
-  customer_phone: z.string().nullable().optional(),
+  customer_phone: z
+    .string()
+    .nullable()
+    .optional()
+    .refine(
+      (value) => {
+        if (!value) return true;
+        const digits = value.replace(/\D/g, "").length;
+        return digits >= 6 && digits <= 15;
+      },
+      { message: "Phone number must contain 6–15 digits" },
+    ),
   customer_email: z.string().email().nullable().optional(),
   notes: z.string().nullable().optional(),
 });

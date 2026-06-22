@@ -1,5 +1,7 @@
 import nodemailer from "nodemailer";
 
+import { ensureServerEnv } from "./load-env.server";
+
 type BookingEmailPayload = {
   pickup: string;
   destination: string;
@@ -14,21 +16,53 @@ type BookingEmailPayload = {
 };
 
 type EmailResult =
-  | { sent: true }
-  | { sent: false; reason: "missing_config" | "provider_error"; detail?: string };
+  | { sent: true; provider: "smtp" | "mailchannels" | "resend" }
+  | {
+      sent: false;
+      reason: "missing_config" | "provider_error";
+      detail?: string;
+    };
 
 const DEFAULT_OWNER_EMAIL = "taxiteamesslingen@yahoo.com";
+const DEFAULT_FROM_EMAIL = "booking@taxiteamesslingen.cab";
 
-function getOwnerEmail() {
-  return process.env.BOOKING_OWNER_EMAIL?.trim() || DEFAULT_OWNER_EMAIL;
+function getOwnerEmails(): string[] {
+  const configured =
+    process.env.BOOKING_OWNER_EMAIL?.trim() || DEFAULT_OWNER_EMAIL;
+
+  const emails = configured
+    .split(/[,;]/)
+    .map((email) => email.trim())
+    .filter(Boolean);
+
+  return emails.length > 0 ? emails : [DEFAULT_OWNER_EMAIL];
 }
 
-function getEmailProvider() {
-  const configured = process.env.EMAIL_PROVIDER?.trim().toLowerCase();
-  if (configured === "yahoo" || configured === "resend") return configured;
-  if (process.env.YAHOO_SMTP_APP_PASSWORD) return "yahoo";
-  if (process.env.RESEND_API_KEY) return "resend";
-  return null;
+function getSmtpConfig() {
+  const host = process.env.SMTP_HOST?.trim() || "mail.privateemail.com";
+  const port = Number(process.env.SMTP_PORT || "465");
+  const user =
+    process.env.SMTP_USER?.trim() ||
+    process.env.SMTP_FROM_EMAIL?.trim() ||
+    DEFAULT_FROM_EMAIL;
+  const password = process.env.SMTP_PASSWORD?.trim();
+  const fromEmail = process.env.SMTP_FROM_EMAIL?.trim() || user;
+
+  return { host, port, user, password, fromEmail };
+}
+
+function isEdgeRuntime() {
+  if (process.versions?.node) {
+    return false;
+  }
+
+  return (
+    process.env.CF_PAGES === "1" ||
+    process.env.CLOUDFLARE_PAGES === "1" ||
+    process.env.NITRO_PRESET === "cloudflare" ||
+    process.env.NITRO_PRESET === "cloudflare_pages" ||
+    process.env.NITRO_PRESET === "cloudflare_module"
+  );
 }
 
 function formatValue(value: string | number | null | undefined) {
@@ -70,21 +104,89 @@ function buildBookingSubject(data: BookingEmailPayload) {
   return `New booking: ${data.pickup} → ${data.destination}`;
 }
 
+function createSmtpTransport(
+  host: string,
+  port: number,
+  user: string,
+  password: string,
+) {
+  return nodemailer.createTransport({
+    host,
+    port,
+    secure: port === 465,
+    requireTLS: port === 587,
+    auth: { user, pass: password },
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 15_000,
+  });
+}
+
+async function sendViaSmtp(
+  data: BookingEmailPayload,
+  ownerEmails: string[],
+  fromEmail: string,
+  host: string,
+  port: number,
+  user: string,
+  password: string,
+): Promise<EmailResult> {
+  const subject = buildBookingSubject(data);
+  const html = buildBookingEmailHtml(data);
+  const portsToTry = port === 465 ? [465, 587] : [port];
+
+  let lastError = "Unknown SMTP error";
+
+  for (const attemptPort of portsToTry) {
+    const transporter = createSmtpTransport(host, attemptPort, user, password);
+
+    try {
+      await transporter.verify();
+      await transporter.sendMail({
+        from: `Taxi Team Esslingen <${fromEmail}>`,
+        to: ownerEmails,
+        replyTo: fromEmail,
+        subject,
+        html,
+      });
+      return { sent: true, provider: "smtp" };
+    } catch (error) {
+      lastError = error instanceof Error ? error.message : lastError;
+      console.error(
+        `[email] SMTP error on port ${attemptPort}:`,
+        lastError,
+      );
+    }
+  }
+
+  return { sent: false, reason: "provider_error", detail: lastError };
+}
+
+function getResendFromEmail(fallbackFromEmail: string) {
+  return (
+    process.env.RESEND_FROM_EMAIL?.trim() ||
+    process.env.SMTP_FROM_EMAIL?.trim() ||
+    fallbackFromEmail
+  );
+}
+
 async function sendViaResend(
   data: BookingEmailPayload,
-  ownerEmail: string,
+  ownerEmails: string[],
+  fromEmail: string,
 ): Promise<EmailResult> {
-  const apiKey = process.env.RESEND_API_KEY;
-  const fromEmail =
-    process.env.RESEND_FROM_EMAIL?.trim() || "onboarding@resend.dev";
-
+  const apiKey = process.env.RESEND_API_KEY?.trim();
   if (!apiKey) {
     return {
       sent: false,
       reason: "missing_config",
-      detail: "RESEND_API_KEY is not set.",
+      detail: "RESEND_API_KEY is not set",
     };
   }
+
+  const subject = buildBookingSubject(data);
+  const html = buildBookingEmailHtml(data);
+  const sender = getResendFromEmail(fromEmail);
 
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -93,87 +195,121 @@ async function sendViaResend(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: fromEmail,
-      to: [ownerEmail],
-      reply_to: ownerEmail,
-      subject: buildBookingSubject(data),
-      html: buildBookingEmailHtml(data),
+      from: `Taxi Team Esslingen <${sender}>`,
+      to: ownerEmails,
+      reply_to: sender,
+      subject,
+      html,
     }),
   });
 
   if (!response.ok) {
     const body = await response.text();
     console.error("[email] Resend error:", response.status, body);
-    return { sent: false, reason: "provider_error", detail: body };
-  }
-
-  return { sent: true };
-}
-
-async function sendViaYahoo(
-  data: BookingEmailPayload,
-  ownerEmail: string,
-): Promise<EmailResult> {
-  const user =
-    process.env.YAHOO_SMTP_USER?.trim() || DEFAULT_OWNER_EMAIL;
-  const appPassword = process.env.YAHOO_SMTP_APP_PASSWORD?.trim();
-
-  if (!appPassword) {
     return {
       sent: false,
-      reason: "missing_config",
-      detail:
-        "YAHOO_SMTP_APP_PASSWORD is not set. Create a Yahoo app password and add it to .env.",
+      reason: "provider_error",
+      detail: body || `Resend HTTP ${response.status}`,
     };
   }
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.mail.yahoo.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user,
-      pass: appPassword,
-    },
+  return { sent: true, provider: "resend" };
+}
+
+async function sendViaMailchannels(
+  data: BookingEmailPayload,
+  ownerEmails: string[],
+  fromEmail: string,
+): Promise<EmailResult> {
+  const subject = buildBookingSubject(data);
+  const html = buildBookingEmailHtml(data);
+
+  const response = await fetch("https://api.mailchannels.net/tx/v1/send", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      personalizations: [
+        { to: ownerEmails.map((email) => ({ email })) },
+      ],
+      from: { email: fromEmail, name: "Taxi Team Esslingen" },
+      reply_to: { email: fromEmail, name: "Taxi Team Esslingen" },
+      subject,
+      content: [{ type: "text/html", value: html }],
+    }),
   });
 
-  try {
-    await transporter.sendMail({
-      from: `Taxi Team Esslingen <${user}>`,
-      to: ownerEmail,
-      replyTo: user,
-      subject: buildBookingSubject(data),
-      html: buildBookingEmailHtml(data),
-    });
-    return { sent: true };
-  } catch (error) {
-    const detail =
-      error instanceof Error ? error.message : "Unknown Yahoo SMTP error";
-    console.error("[email] Yahoo SMTP error:", detail);
-    return { sent: false, reason: "provider_error", detail };
+  if (!response.ok) {
+    const body = await response.text();
+    console.error("[email] Mailchannels error:", response.status, body);
+    return {
+      sent: false,
+      reason: "provider_error",
+      detail: body || `Mailchannels HTTP ${response.status}`,
+    };
   }
+
+  return { sent: true, provider: "mailchannels" };
+}
+
+async function sendViaHttpProviders(
+  data: BookingEmailPayload,
+  ownerEmails: string[],
+  fromEmail: string,
+): Promise<EmailResult> {
+  const resendResult = await sendViaResend(data, ownerEmails, fromEmail);
+  if (resendResult.sent) {
+    return resendResult;
+  }
+
+  if (resendResult.reason !== "missing_config") {
+    console.warn(
+      "[email] Resend failed — trying Mailchannels.",
+      resendResult.detail,
+    );
+  }
+
+  return sendViaMailchannels(data, ownerEmails, fromEmail);
 }
 
 export async function sendBookingOwnerEmail(
   data: BookingEmailPayload,
 ): Promise<EmailResult> {
-  const ownerEmail = getOwnerEmail();
-  const provider = getEmailProvider();
+  ensureServerEnv();
 
-  if (!provider) {
-    console.warn(
-      "[email] Skipping owner notification — configure Yahoo SMTP or Resend in .env.",
-    );
-    return {
-      sent: false,
-      reason: "missing_config",
-      detail: "No email provider configured.",
-    };
+  const ownerEmails = getOwnerEmails();
+  const { host, port, user, password, fromEmail } = getSmtpConfig();
+  const onEdge = isEdgeRuntime();
+
+  console.info(
+    `[email] Sending booking notification from ${fromEmail} to ${ownerEmails.join(", ")}`,
+  );
+
+  if (onEdge || !password) {
+    if (!password) {
+      console.warn(
+        "[email] SMTP_PASSWORD is not set — using HTTP email provider.",
+      );
+    } else {
+      console.info("[email] Edge runtime detected — using HTTP email provider.");
+    }
+
+    return sendViaHttpProviders(data, ownerEmails, fromEmail);
   }
 
-  if (provider === "yahoo") {
-    return sendViaYahoo(data, ownerEmail);
+  const smtpResult = await sendViaSmtp(
+    data,
+    ownerEmails,
+    fromEmail,
+    host,
+    port,
+    user,
+    password,
+  );
+
+  if (smtpResult.sent) {
+    return smtpResult;
   }
 
-  return sendViaResend(data, ownerEmail);
+  console.warn("[email] SMTP failed — trying HTTP email providers.");
+  return sendViaHttpProviders(data, ownerEmails, fromEmail);
 }

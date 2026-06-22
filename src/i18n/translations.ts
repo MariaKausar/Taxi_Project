@@ -165,6 +165,9 @@ export const translations = {
   bf_success: { de: "Buchung eingegangen", en: "Booking received" },
   bf_another: { de: "Neue Buchung", en: "New booking" },
   bf_error: { de: "Buchung konnte nicht übermittelt werden. Bitte rufen Sie uns unter +49 1785 183559 an.", en: "Could not submit booking. Please call us at +49 1785 183559." },
+  bf_phone_invalid: { de: "Bitte geben Sie eine gültige Telefonnummer ein (6–15 Ziffern).", en: "Please enter a valid phone number (6–15 digits)." },
+  bf_date_past: { de: "Bitte wählen Sie ein Datum ab heute.", en: "Please choose a date from today onward." },
+  bf_time_past: { de: "Bitte wählen Sie eine zukünftige Uhrzeit.", en: "Please choose a future time." },
 
   // Footer
   footer_desc: { de: "Zuverlässiger, professioneller Taxiservice in Esslingen am Neckar. 24/7 für lokale Fahrten, Flughafentransfer und Geschäftsreisen.", en: "Reliable, professional taxi service in Esslingen am Neckar. Available 24/7 for local rides, airport transfers and business travel." },
