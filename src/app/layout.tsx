@@ -40,8 +40,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="de" className={`${inter.variable} ${plusJakarta.variable}`}>
-      <body>
+    <html
+      lang="de"
+      translate="no"
+      suppressHydrationWarning
+      className={`${inter.variable} ${plusJakarta.variable}`}
+    >
+      <body suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>

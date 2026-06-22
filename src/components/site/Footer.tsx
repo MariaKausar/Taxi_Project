@@ -120,7 +120,7 @@ export function Footer() {
       </div>
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-6 text-xs text-primary-foreground/60 sm:flex-row sm:px-6 lg:px-8">
-          <p>
+          <p suppressHydrationWarning>
             © {new Date().getFullYear()} Taxi Team Esslingen. {t("footer_rights")}
           </p>
           <p>{t("footer_madein")}</p>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MapPin, Calendar, Users, Briefcase, ArrowRight, Check, User, Phone } from "lucide-react";
 import { createBooking } from "@/lib/actions/bookings";
 import { useT } from "@/i18n/LanguageContext";
@@ -55,7 +55,7 @@ function isPickupInPast(date: string, time: string) {
 
 export function BookingForm({ compact = false }: Props) {
   const { t } = useT();
-  const minPickupDate = getLocalDateString();
+  const [minPickupDate, setMinPickupDate] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -67,6 +67,10 @@ export function BookingForm({ compact = false }: Props) {
   const [luggage, setLuggage] = useState(initialFormState.luggage);
   const [name, setName] = useState(initialFormState.name);
   const [phone, setPhone] = useState(initialFormState.phone);
+
+  useEffect(() => {
+    setMinPickupDate(getLocalDateString());
+  }, []);
 
   function resetForm() {
     setSubmitted(false);
@@ -92,12 +96,12 @@ export function BookingForm({ compact = false }: Props) {
       return;
     }
 
-    if (date < minPickupDate) {
+    if (minPickupDate && date < minPickupDate) {
       setError(t("bf_date_past"));
       return;
     }
 
-    if (isPickupInPast(date, time)) {
+    if (minPickupDate && isPickupInPast(date, time)) {
       setError(t("bf_time_past"));
       return;
     }
@@ -160,10 +164,10 @@ export function BookingForm({ compact = false }: Props) {
               <input
                 type="date"
                 value={date}
-                min={minPickupDate}
+                min={minPickupDate || undefined}
                 onChange={(e) => {
                   const next = e.target.value;
-                  if (next && next < minPickupDate) return;
+                  if (minPickupDate && next && next < minPickupDate) return;
                   setDate(next);
                 }}
                 required
