@@ -45,8 +45,8 @@ export const translations = {
   svc_local_d: { de: "Schnelle Fahrten in Esslingen und Umgebung.", en: "Quick rides within Esslingen and surrounding districts." },
   svc_voucher_t: { de: "Medizinischer Transport", en: "Medical Transport" },
   svc_voucher_d: {
-    de: "Sichere, komfortable und zuverlässige Fahrten zu Terminen und Therapien — mit geschulten Fahrern, die auf Ihr Wohlbefinden achten.",
-    en: "Safe, comfortable, and reliable rides to appointments and therapy sessions with trained drivers who care for your well-being.",
+    de: "Sichere, zuverlässige Fahrten zu Terminen und Therapien.",
+    en: "Safe, reliable rides to appointments and therapy.",
   },
   svc_delivery_t: { de: "Kurier- und Botenfahrten", en: "Delivery Service" },
   svc_delivery_d: {
