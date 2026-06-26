@@ -261,6 +261,10 @@ async function sendViaHttpProviders(
   return sendViaMailchannels(data, ownerEmails, fromEmail);
 }
 
+export function getOwnerNotificationEmails(): string[] {
+  return getOwnerEmails();
+}
+
 export async function sendBookingOwnerEmail(
   data: BookingEmailPayload,
 ): Promise<EmailResult> {
@@ -302,4 +306,116 @@ export async function sendBookingOwnerEmail(
 
   console.warn("[email] SMTP failed — trying HTTP email providers.");
   return sendViaHttpProviders(data, ownerEmails, fromEmail);
+}
+
+type ContactEmailPayload = {
+  customer_name: string;
+  customer_phone: string;
+  customer_email: string;
+  message: string;
+};
+
+function buildContactEmailHtml(data: ContactEmailPayload) {
+  const rows = [
+    ["Name", data.customer_name],
+    ["Phone", data.customer_phone],
+    ["Email", data.customer_email],
+    ["Message", data.message],
+  ];
+
+  const tableRows = rows
+    .map(
+      ([label, value]) =>
+        `<tr><td style="padding:8px 12px;border:1px solid #e5e7eb;font-weight:600;">${label}</td><td style="padding:8px 12px;border:1px solid #e5e7eb;">${formatValue(value)}</td></tr>`,
+    )
+    .join("");
+
+  return `
+    <div style="font-family:Arial,sans-serif;color:#111827;max-width:640px;">
+      <h2 style="margin:0 0 12px;">New contact message</h2>
+      <p style="margin:0 0 16px;color:#4b5563;">A new message was submitted on Taxi Team Esslingen.</p>
+      <table style="border-collapse:collapse;width:100%;font-size:14px;">${tableRows}</table>
+    </div>
+  `;
+}
+
+export async function sendContactOwnerEmail(
+  data: ContactEmailPayload,
+): Promise<EmailResult> {
+  ensureServerEnv();
+
+  const ownerEmails = getOwnerEmails();
+  const { host, port, user, password, fromEmail } = getSmtpConfig();
+  const subject = `New contact message from ${data.customer_name}`;
+  const html = buildContactEmailHtml(data);
+  const onEdge = isEdgeRuntime();
+
+  console.info(
+    `[email] Sending contact notification from ${fromEmail} to ${ownerEmails.join(", ")}`,
+  );
+
+  if (onEdge || !password) {
+    const resendResult = await sendViaResend(
+      {
+        pickup: data.customer_name,
+        destination: "Contact form",
+        customer_name: data.customer_name,
+        customer_phone: data.customer_phone,
+        customer_email: data.customer_email,
+        notes: data.message,
+      },
+      ownerEmails,
+      fromEmail,
+    );
+    if (resendResult.sent) return resendResult;
+
+    const response = await fetch("https://api.mailchannels.net/tx/v1/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        personalizations: [
+          { to: ownerEmails.map((email) => ({ email })) },
+        ],
+        from: { email: fromEmail, name: "Taxi Team Esslingen" },
+        reply_to: { email: data.customer_email, name: data.customer_name },
+        subject,
+        content: [{ type: "text/html", value: html }],
+      }),
+    });
+
+    if (!response.ok) {
+      const body = await response.text();
+      return {
+        sent: false,
+        reason: "provider_error",
+        detail: body || `Mailchannels HTTP ${response.status}`,
+      };
+    }
+
+    return { sent: true, provider: "mailchannels" };
+  }
+
+  const portsToTry = port === 465 ? [465, 587] : [port];
+  let lastError = "Unknown SMTP error";
+
+  for (const attemptPort of portsToTry) {
+    const transporter = createSmtpTransport(host, attemptPort, user, password);
+
+    try {
+      await transporter.verify();
+      await transporter.sendMail({
+        from: `Taxi Team Esslingen <${fromEmail}>`,
+        to: ownerEmails,
+        replyTo: data.customer_email,
+        subject,
+        html,
+      });
+      return { sent: true, provider: "smtp" };
+    } catch (error) {
+      lastError = error instanceof Error ? error.message : lastError;
+      console.error(`[email] Contact SMTP error on port ${attemptPort}:`, lastError);
+    }
+  }
+
+  return { sent: false, reason: "provider_error", detail: lastError };
 }

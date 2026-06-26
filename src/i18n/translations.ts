@@ -160,6 +160,9 @@ export const translations = {
   bf_name: { de: "Ihr Name", en: "Your name" },
   bf_name_ph: { de: "Vollständiger Name", en: "Full name" },
   bf_phone: { de: "Telefon", en: "Phone" },
+  bf_email: { de: "E-Mail", en: "Email" },
+  bf_email_ph: { de: "ihre@email.de", en: "you@email.com" },
+  bf_email_invalid: { de: "Bitte geben Sie eine gültige E-Mail-Adresse ein.", en: "Please enter a valid email address." },
   bf_submit: { de: "Buchung bestätigen", en: "Confirm Booking" },
   bf_sending: { de: "Wird gesendet…", en: "Sending…" },
   bf_success: { de: "Buchung eingegangen", en: "Booking received" },
@@ -225,6 +228,7 @@ export const translations = {
   contact_message_ph: { de: "Wie können wir helfen?", en: "How can we help?" },
   contact_send: { de: "Nachricht senden", en: "Send Message" },
   contact_sent: { de: "Danke — wir melden uns in Kürze.", en: "Thanks — we'll be in touch shortly." },
+  contact_error: { de: "Nachricht konnte nicht gesendet werden. Bitte rufen Sie uns unter +49 1785 183559 an.", en: "Could not send message. Please call us at +49 1785 183559." },
 
   // Booking page
   booking_eyebrow: { de: "Online-Buchung", en: "Online Booking" },

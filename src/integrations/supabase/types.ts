@@ -24,6 +24,10 @@ export type Database = {
           id: string
           luggage: number | null
           notes: string | null
+          owner_email_provider: string | null
+          owner_email_sent_at: string | null
+          owner_email_status: string
+          owner_notification_emails: string | null
           passengers: number | null
           pickup: string
           pickup_date: string | null
@@ -39,6 +43,10 @@ export type Database = {
           id?: string
           luggage?: number | null
           notes?: string | null
+          owner_email_provider?: string | null
+          owner_email_sent_at?: string | null
+          owner_email_status?: string
+          owner_notification_emails?: string | null
           passengers?: number | null
           pickup: string
           pickup_date?: string | null
@@ -54,11 +62,54 @@ export type Database = {
           id?: string
           luggage?: number | null
           notes?: string | null
+          owner_email_provider?: string | null
+          owner_email_sent_at?: string | null
+          owner_email_status?: string
+          owner_notification_emails?: string | null
           passengers?: number | null
           pickup?: string
           pickup_date?: string | null
           pickup_time?: string | null
           status?: string
+        }
+        Relationships: []
+      }
+      contact_messages: {
+        Row: {
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          id: string
+          message: string
+          owner_email_provider: string | null
+          owner_email_sent_at: string | null
+          owner_email_status: string
+          owner_notification_emails: string | null
+        }
+        Insert: {
+          created_at?: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          id?: string
+          message: string
+          owner_email_provider?: string | null
+          owner_email_sent_at?: string | null
+          owner_email_status?: string
+          owner_notification_emails?: string | null
+        }
+        Update: {
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string
+          id?: string
+          message?: string
+          owner_email_provider?: string | null
+          owner_email_sent_at?: string | null
+          owner_email_status?: string
+          owner_notification_emails?: string | null
         }
         Relationships: []
       }

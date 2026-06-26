@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MapPin, Calendar, Users, Briefcase, ArrowRight, Check, User, Phone } from "lucide-react";
+import { MapPin, Calendar, Users, Briefcase, ArrowRight, Check, User, Phone, Mail } from "lucide-react";
 import { createBooking } from "@/lib/actions/bookings";
 import { useT } from "@/i18n/LanguageContext";
 
@@ -19,6 +19,7 @@ const initialFormState = {
   luggage: "0",
   name: "",
   phone: "",
+  email: "",
 };
 
 function getLocalDateString(date = new Date()) {
@@ -67,6 +68,7 @@ export function BookingForm({ compact = false }: Props) {
   const [luggage, setLuggage] = useState(initialFormState.luggage);
   const [name, setName] = useState(initialFormState.name);
   const [phone, setPhone] = useState(initialFormState.phone);
+  const [email, setEmail] = useState(initialFormState.email);
 
   useEffect(() => {
     setMinPickupDate(getLocalDateString());
@@ -84,6 +86,7 @@ export function BookingForm({ compact = false }: Props) {
     setLuggage(initialFormState.luggage);
     setName(initialFormState.name);
     setPhone(initialFormState.phone);
+    setEmail(initialFormState.email);
   }
 
   async function onSubmit(e: React.FormEvent) {
@@ -93,6 +96,11 @@ export function BookingForm({ compact = false }: Props) {
     const phoneDigits = countPhoneDigits(phone);
     if (phoneDigits < MIN_PHONE_DIGITS || phoneDigits > MAX_PHONE_DIGITS) {
       setError(t("bf_phone_invalid"));
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setError(t("bf_email_invalid"));
       return;
     }
 
@@ -118,6 +126,7 @@ export function BookingForm({ compact = false }: Props) {
         luggage: luggage ? Number(luggage) : null,
         customer_name: name || null,
         customer_phone: phone || null,
+        customer_email: email.trim(),
       });
     } catch {
       setSubmitting(false);
@@ -205,6 +214,19 @@ export function BookingForm({ compact = false }: Props) {
               autoComplete="tel"
               maxLength={24}
               placeholder="+49…"
+              className="w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground focus:outline-none disabled:opacity-60"
+            />
+          </Field>
+
+          <Field icon={<Mail className="h-4 w-4" />} label={t("bf_email")}>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={submitting}
+              autoComplete="email"
+              placeholder={t("bf_email_ph")}
               className="w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground focus:outline-none disabled:opacity-60"
             />
           </Field>
