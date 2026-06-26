@@ -52,51 +52,33 @@ function ownerEmailsValue() {
   return getOwnerNotificationEmails().join(", ");
 }
 
-async function recordOwnerEmailStatus(
-  table: "bookings" | "contact_messages",
-  id: string,
-  emailResult: Awaited<ReturnType<typeof sendBookingOwnerEmail>>,
-) {
-  const supabase = getSupabaseServerForWrites();
-
-  await supabase
-    .from(table)
-    .update({
-      owner_notification_emails: ownerEmailsValue(),
-      owner_email_sent_at: emailResult.sent ? new Date().toISOString() : null,
-      owner_email_status: emailResult.sent ? "sent" : "failed",
-      owner_email_provider: emailResult.sent ? emailResult.provider : null,
-    })
-    .eq("id", id);
-}
-
 export async function createBooking(data: BookingInput) {
   const parsed = bookingInput.parse(data);
   const supabase = getSupabaseServerForWrites();
   const ownerEmails = ownerEmailsValue();
 
-  const { data: booking, error } = await supabase
-    .from("bookings")
-    .insert({
-      pickup: parsed.pickup,
-      destination: parsed.destination,
-      pickup_date: parsed.pickup_date ?? null,
-      pickup_time: parsed.pickup_time ?? null,
-      passengers: parsed.passengers ?? null,
-      luggage: parsed.luggage ?? null,
-      customer_name: parsed.customer_name ?? null,
-      customer_phone: parsed.customer_phone ?? null,
-      customer_email: parsed.customer_email,
-      notes: parsed.notes ?? null,
-      owner_notification_emails: ownerEmails,
-      owner_email_status: "pending",
-    })
-    .select("id")
-    .single();
+  const emailResult = await sendBookingOwnerEmail(parsed);
 
-  if (error || !booking) {
+  const { error } = await supabase.from("bookings").insert({
+    pickup: parsed.pickup,
+    destination: parsed.destination,
+    pickup_date: parsed.pickup_date ?? null,
+    pickup_time: parsed.pickup_time ?? null,
+    passengers: parsed.passengers ?? null,
+    luggage: parsed.luggage ?? null,
+    customer_name: parsed.customer_name ?? null,
+    customer_phone: parsed.customer_phone ?? null,
+    customer_email: parsed.customer_email,
+    notes: parsed.notes ?? null,
+    owner_notification_emails: ownerEmails,
+    owner_email_sent_at: emailResult.sent ? new Date().toISOString() : null,
+    owner_email_status: emailResult.sent ? "sent" : "failed",
+    owner_email_provider: emailResult.sent ? emailResult.provider : null,
+  });
+
+  if (error) {
     console.error("[createBooking]", error);
-    const detail = [error?.message, error?.code, error?.hint]
+    const detail = [error.message, error.code, error.hint]
       .filter(Boolean)
       .join(" — ");
     throw new Error(
@@ -105,9 +87,6 @@ export async function createBooking(data: BookingInput) {
         : `Failed to save booking: ${detail}`,
     );
   }
-
-  const emailResult = await sendBookingOwnerEmail(parsed);
-  await recordOwnerEmailStatus("bookings", booking.id, emailResult);
 
   if (!emailResult.sent) {
     console.warn(

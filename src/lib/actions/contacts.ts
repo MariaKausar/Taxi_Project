@@ -28,22 +28,22 @@ export async function createContactMessage(data: ContactInput) {
   const supabase = getSupabaseServerForWrites();
   const ownerEmails = getOwnerNotificationEmails().join(", ");
 
-  const { data: contactMessage, error } = await supabase
-    .from("contact_messages")
-    .insert({
-      customer_name: parsed.customer_name,
-      customer_phone: parsed.customer_phone,
-      customer_email: parsed.customer_email,
-      message: parsed.message,
-      owner_notification_emails: ownerEmails,
-      owner_email_status: "pending",
-    })
-    .select("id")
-    .single();
+  const emailResult = await sendContactOwnerEmail(parsed);
 
-  if (error || !contactMessage) {
+  const { error } = await supabase.from("contact_messages").insert({
+    customer_name: parsed.customer_name,
+    customer_phone: parsed.customer_phone,
+    customer_email: parsed.customer_email,
+    message: parsed.message,
+    owner_notification_emails: ownerEmails,
+    owner_email_sent_at: emailResult.sent ? new Date().toISOString() : null,
+    owner_email_status: emailResult.sent ? "sent" : "failed",
+    owner_email_provider: emailResult.sent ? emailResult.provider : null,
+  });
+
+  if (error) {
     console.error("[createContactMessage]", error);
-    const detail = [error?.message, error?.code, error?.hint]
+    const detail = [error.message, error.code, error.hint]
       .filter(Boolean)
       .join(" — ");
     throw new Error(
@@ -52,18 +52,6 @@ export async function createContactMessage(data: ContactInput) {
         : `Failed to save message: ${detail}`,
     );
   }
-
-  const emailResult = await sendContactOwnerEmail(parsed);
-
-  await supabase
-    .from("contact_messages")
-    .update({
-      owner_notification_emails: ownerEmails,
-      owner_email_sent_at: emailResult.sent ? new Date().toISOString() : null,
-      owner_email_status: emailResult.sent ? "sent" : "failed",
-      owner_email_provider: emailResult.sent ? emailResult.provider : null,
-    })
-    .eq("id", contactMessage.id);
 
   if (!emailResult.sent) {
     console.warn(
