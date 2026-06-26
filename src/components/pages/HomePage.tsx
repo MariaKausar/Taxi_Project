@@ -8,7 +8,7 @@ import {
   Briefcase,
   MapPin,
   Hotel,
-  Ticket,
+  HeartPulse,
   Package,
   Clock,
   ShieldCheck,
@@ -29,7 +29,6 @@ import heroImg from "@/assets/hero-taxi.jpg";
 import { Layout } from "@/components/site/Layout";
 import { BookingForm } from "@/components/site/BookingForm";
 import { Section, SectionHeader } from "@/components/site/Section";
-import { ServiceAreas } from "@/components/site/ServiceAreas";
 import { useT } from "@/i18n/LanguageContext";
 
 export function HomePage() {
@@ -38,7 +37,6 @@ export function HomePage() {
       <Hero />
       <TrustBar />
       <Services />
-      <ServiceAreas />
       <WhyUs />
       <HowItWorks />
       <Testimonials />
@@ -142,7 +140,7 @@ function Services() {
   const { t } = useT();
   const services = [
     { icon: MapPin, title: t("svc_local_t"), desc: t("svc_local_d") },
-    { icon: Ticket, title: t("svc_voucher_t"), desc: t("svc_voucher_d") },
+    { icon: HeartPulse, title: t("svc_voucher_t"), desc: t("svc_voucher_d") },
     { icon: Package, title: t("svc_delivery_t"), desc: t("svc_delivery_d") },
     { icon: Plane, title: t("svc_airport_t"), desc: t("svc_airport_d") },
     { icon: Briefcase, title: t("svc_business_t"), desc: t("svc_business_d") },

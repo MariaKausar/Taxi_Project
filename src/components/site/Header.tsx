@@ -24,7 +24,6 @@ export function Header() {
   const navLinks: NavLink[] = [
     { key: "home", href: "/", label: t("nav_home"), exact: true },
     { key: "book", href: "/booking", label: t("nav_book") },
-    { key: "areas", href: "/#service-areas", label: t("nav_areas") },
     { key: "about", href: "/about", label: t("nav_about") },
     { key: "contact", href: "/contact", label: t("nav_contact") },
   ];

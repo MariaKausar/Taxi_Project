@@ -4,7 +4,6 @@ export const translations = {
   // Header / nav
   nav_home: { de: "Startseite", en: "Home" },
   nav_book: { de: "Fahrt buchen", en: "Book a Ride" },
-  nav_areas: { de: "Einzugsgebiet", en: "Service Area" },
   nav_about: { de: "Über uns", en: "About" },
   nav_contact: { de: "Kontakt", en: "Contact" },
   header_tagline: { de: "24/7 Service", en: "24/7 Service" },
@@ -12,8 +11,8 @@ export const translations = {
 
   // Hero
   hero_badge: {
-    de: "Jetzt verfügbar · Ankunft 5–8 Min.",
-    en: "Available right now · Avg. arrival 5–8 min",
+    de: "Jetzt verfügbar",
+    en: "Available right now",
   },
   hero_title_pre: { de: "Buchen Sie Ihr Taxi in ", en: "Book your taxi in " },
   hero_title_city: { de: "Esslingen am Neckar", en: "Esslingen am Neckar" },
@@ -31,7 +30,7 @@ export const translations = {
   // Trust bar
   trust_licensed: { de: "Lizenzierter Taxibetrieb", en: "Licensed Taxi Operator" },
   trust_gdpr: { de: "DSGVO-konform", en: "GDPR Compliant" },
-  trust_payment: { de: "Karte & Bar akzeptiert", en: "Card & Cash Accepted" },
+  trust_payment: { de: "Karten und Barzahlung", en: "Card & Cash Accepted" },
   trust_airport: { de: "Flughafen-Spezialisten", en: "Airport Specialists" },
   trust_local: { de: "Lokal seit 1998", en: "Local since 1998" },
 
@@ -44,47 +43,26 @@ export const translations = {
   },
   svc_local_t: { de: "Lokaler Taxiservice", en: "Local Taxi Service" },
   svc_local_d: { de: "Schnelle Fahrten in Esslingen und Umgebung.", en: "Quick rides within Esslingen and surrounding districts." },
-  svc_voucher_t: { de: "Taxigutschein / Taxicoupon", en: "Taxi Voucher / Taxi Coupon" },
+  svc_voucher_t: { de: "Medizinischer Transport", en: "Medical Transport" },
   svc_voucher_d: {
-    de: "Verschenken Sie Fahrten — ideal als Geschenk für Familie, Freunde oder Mitarbeiter.",
-    en: "Gift rides to family, friends or employees — the perfect present for any occasion.",
+    de: "Zuverlässiger und komfortabler Transport zu Arztterminen, Therapien und medizinischen Einrichtungen. Unsere erfahrenen Fahrer legen Wert auf Ihre Sicherheit, Ihren Komfort und Ihr Wohlbefinden auf jeder Fahrt.",
+    en: "Reliable and comfortable transportation to medical appointments, therapy sessions, and healthcare visits. Our experienced drivers prioritize your safety, comfort, and peace of mind every step of the way.",
   },
-  svc_delivery_t: { de: "Botendienst", en: "Delivery Service" },
+  svc_delivery_t: { de: "Kurier- und Botenfahrten", en: "Delivery Service" },
   svc_delivery_d: {
     de: "Schnelle und zuverlässige Lieferung von Paketen und Dokumenten in Esslingen und Umgebung.",
     en: "Fast, reliable delivery of packages and documents across Esslingen and the surrounding area.",
   },
   svc_airport_t: { de: "Flughafentransfer", en: "Airport Transfers" },
   svc_airport_d: { de: "Zuverlässige Transfers zum Flughafen Stuttgart (STR) und nahen Flughäfen.", en: "Reliable transfers to Stuttgart Airport (STR) and nearby airports." },
-  svc_business_t: { de: "Geschäftsreisen", en: "Business Travel" },
-  svc_business_d: { de: "Professionelle, pünktliche Beförderung für Firmenkunden.", en: "Professional, on-time transportation for corporate clients." },
+  svc_business_t: { de: "Geschäftsfahrten", en: "Business Travel" },
+  svc_business_d: { de: "Professionelle und pünktliche Beförderung für Firmenkunden.", en: "Professional, on-time transportation for corporate clients." },
   svc_long_t: { de: "Fernfahrten", en: "Long Distance Rides" },
   svc_long_d: { de: "Überregionale Fahrten in ganz Deutschland.", en: "Intercity and regional travel anywhere in Germany." },
   svc_hotel_t: { de: "Hoteltransfer", en: "Hotel Transfers" },
   svc_hotel_d: { de: "Abholung und Bringservice direkt vom Hotel.", en: "Door-to-door pickup and drop-off from your hotel." },
   svc_event_t: { de: "Event-Transport", en: "Event Transportation" },
   svc_event_d: { de: "Hochzeiten, Konferenzen und besondere Anlässe — mit Sorgfalt.", en: "Weddings, conferences and special occasions, handled with care." },
-
-  // Service areas
-  areas_eyebrow: { de: "Unser Einzugsgebiet", en: "Our Service Area" },
-  areas_title: { de: "Taxi in Esslingen & Umgebung", en: "Taxi across Esslingen & the region" },
-  areas_desc: {
-    de: "Wir sind in Esslingen am Neckar und den umliegenden Gemeinden für Sie unterwegs — lokal, zuverlässig und rund um die Uhr.",
-    en: "We serve Esslingen am Neckar and the surrounding communities — local, reliable and available around the clock.",
-  },
-  areas_hub: { de: "Hauptstandort", en: "Home base" },
-  areas_name_esslingen: { de: "Esslingen", en: "Esslingen" },
-  areas_name_sirnau: { de: "Sirnau", en: "Sirnau" },
-  areas_name_zell: { de: "Zell", en: "Zell" },
-  areas_name_altbach: { de: "Altbach", en: "Altbach" },
-  areas_name_ostfildern: { de: "Ostfildern", en: "Ostfildern" },
-  areas_name_aichwald: { de: "Aichwald", en: "Aichwald" },
-  areas_name_denkendorf: { de: "Denkendorf", en: "Denkendorf" },
-  areas_name_neuhausen: { de: "Neuhausen", en: "Neuhausen" },
-  areas_note: {
-    de: "Ihr Ziel liegt außerhalb dieser Orte? Rufen Sie uns an — wir fahren auch Fernfahrten und Flughafentransfers in ganz Baden-Württemberg.",
-    en: "Travelling outside these areas? Call us — we also cover long-distance rides and airport transfers across Baden-Württemberg.",
-  },
 
   // Why us
   why_eyebrow: { de: "Warum wir", en: "Why Choose Us" },
