@@ -15,7 +15,7 @@ type BookingEmailPayload = {
   notes?: string | null;
 };
 
-type EmailResult =
+export type EmailResult =
   | { sent: true; provider: "smtp" | "mailchannels" | "resend" }
   | {
       sent: false;

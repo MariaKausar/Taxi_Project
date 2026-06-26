@@ -21,9 +21,15 @@ export function getSupabaseServer() {
   return createServerClient(url, publishableKey);
 }
 
+export function hasSupabaseServiceRole() {
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+  const url = getSupabaseUrlFromEnv(process.env);
+  return Boolean(url && serviceRoleKey);
+}
+
 /** Prefer service role for trusted server writes; falls back to publishable key. */
 export function getSupabaseServerForWrites() {
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
   const url = getSupabaseUrlFromEnv(process.env);
 
   if (url && serviceRoleKey) {

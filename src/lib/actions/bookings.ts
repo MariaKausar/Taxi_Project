@@ -6,7 +6,16 @@ import {
   getOwnerNotificationEmails,
   sendBookingOwnerEmail,
 } from "@/lib/email.server";
-import { getSupabaseServerForWrites } from "@/lib/supabase.server";
+import {
+  isMissingOwnerTrackingColumns,
+  ownerEmailPatchFromResult,
+  sendOwnerEmailSafely,
+  stripOwnerTrackingFields,
+} from "@/lib/form-db.server";
+import {
+  getSupabaseServerForWrites,
+  hasSupabaseServiceRole,
+} from "@/lib/supabase.server";
 
 const bookingInput = z.object({
   pickup: z.string().min(1),
@@ -48,18 +57,28 @@ const bookingInput = z.object({
 
 export type BookingInput = z.infer<typeof bookingInput>;
 
-function ownerEmailsValue() {
-  return getOwnerNotificationEmails().join(", ");
+function bookingSaveError(error: {
+  message?: string;
+  code?: string;
+  hint?: string;
+}) {
+  const detail = [error.message, error.code, error.hint]
+    .filter(Boolean)
+    .join(" — ");
+  throw new Error(
+    process.env.NODE_ENV === "production"
+      ? "Failed to save booking"
+      : `Failed to save booking: ${detail}`,
+  );
 }
 
 export async function createBooking(data: BookingInput) {
   const parsed = bookingInput.parse(data);
   const supabase = getSupabaseServerForWrites();
-  const ownerEmails = ownerEmailsValue();
+  const ownerEmails = getOwnerNotificationEmails().join(", ");
+  const useServiceRole = hasSupabaseServiceRole();
 
-  const emailResult = await sendBookingOwnerEmail(parsed);
-
-  const { error } = await supabase.from("bookings").insert({
+  const row = {
     pickup: parsed.pickup,
     destination: parsed.destination,
     pickup_date: parsed.pickup_date ?? null,
@@ -71,21 +90,58 @@ export async function createBooking(data: BookingInput) {
     customer_email: parsed.customer_email,
     notes: parsed.notes ?? null,
     owner_notification_emails: ownerEmails,
-    owner_email_sent_at: emailResult.sent ? new Date().toISOString() : null,
-    owner_email_status: emailResult.sent ? "sent" : "failed",
-    owner_email_provider: emailResult.sent ? emailResult.provider : null,
-  });
+    owner_email_status: "pending",
+  };
 
-  if (error) {
-    console.error("[createBooking]", error);
-    const detail = [error.message, error.code, error.hint]
-      .filter(Boolean)
-      .join(" — ");
-    throw new Error(
-      process.env.NODE_ENV === "production"
-        ? "Failed to save booking"
-        : `Failed to save booking: ${detail}`,
-    );
+  let bookingId: string | undefined;
+
+  if (useServiceRole) {
+    const { data: saved, error } = await supabase
+      .from("bookings")
+      .insert(row)
+      .select("id")
+      .single();
+
+    const id = saved?.id;
+    if (error || !id) {
+      console.error("[createBooking]", error ?? "Missing booking id after insert");
+      bookingSaveError(error ?? { message: "Missing booking id after insert" });
+    }
+
+    bookingId = id;
+  } else {
+    let { error } = await supabase.from("bookings").insert(row);
+
+    if (error && isMissingOwnerTrackingColumns(error)) {
+      console.warn(
+        "[createBooking] Owner tracking columns missing — saving core booking fields only.",
+      );
+      ({ error } = await supabase
+        .from("bookings")
+        .insert(stripOwnerTrackingFields(row)));
+    }
+
+    if (error) {
+      console.error("[createBooking]", error);
+      bookingSaveError(error);
+    }
+  }
+
+  const emailResult = await sendOwnerEmailSafely(
+    sendBookingOwnerEmail,
+    parsed,
+    "createBooking",
+  );
+
+  if (bookingId && useServiceRole) {
+    const { error } = await supabase
+      .from("bookings")
+      .update(ownerEmailPatchFromResult(emailResult))
+      .eq("id", bookingId);
+
+    if (error) {
+      console.warn("[createBooking] Could not update owner email status:", error);
+    }
   }
 
   if (!emailResult.sent) {
