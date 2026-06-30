@@ -121,7 +121,7 @@ function HeroStat({ value, label }: { value: string; label: string }) {
 
 function TrustBar() {
   const { t } = useT();
-  const items = [t("trust_licensed"), t("trust_gdpr"), t("trust_payment"), t("trust_airport"), t("trust_local")];
+  const items = [t("trust_licensed"), t("trust_gdpr"), t("trust_payment"), t("trust_airport")];
   return (
     <div className="border-y border-border bg-secondary/60">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-10 gap-y-3 px-4 py-5 text-xs font-semibold uppercase tracking-wider text-muted-foreground sm:px-6 lg:px-8">
