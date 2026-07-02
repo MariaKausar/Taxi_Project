@@ -43,13 +43,6 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  alternates: {
-    canonical: "/",
-    languages: {
-      "de-DE": "/",
-      "en-DE": "/",
-    },
-  },
   verification: {
     google: siteConfig.googleVerification,
   },
