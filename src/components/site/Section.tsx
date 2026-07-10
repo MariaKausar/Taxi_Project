@@ -10,10 +10,10 @@ export function Section({ children, className, id }: { children: ReactNode; clas
 }
 
 export function SectionHeader({
-  eyebrow, title, description, center = true,
-}: { eyebrow?: string; title: string; description?: string; center?: boolean }) {
+  eyebrow, title, description, center = true, className,
+}: { eyebrow?: string; title: string; description?: string; center?: boolean; className?: string }) {
   return (
-    <div className={cn("mb-12 max-w-2xl", center && "mx-auto text-center")}>
+    <div className={cn("mb-12 max-w-2xl", center && "mx-auto text-center", className)}>
       {eyebrow && (
         <div className={cn("mb-3", center && "flex justify-center")}>
           <span className="inline-flex items-center rounded-full bg-brand/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-brand-foreground">

@@ -10,12 +10,12 @@ export function AboutPage() {
   const { t } = useT();
   return (
     <Layout>
-      <Section className="bg-secondary/40 pt-14 sm:pt-20">
-        <SectionHeader eyebrow={t("about_eyebrow")} title={t("about_title")} />
+      <Section className="bg-secondary/40 pt-14 pb-8 sm:pt-20 sm:pb-24">
+        <SectionHeader eyebrow={t("about_eyebrow")} title={t("about_title")} className="mb-0 sm:mb-12" />
       </Section>
 
-      <Section>
-        <div className="mx-auto max-w-3xl space-y-5 text-base text-muted-foreground">
+      <Section className="pt-0 sm:pt-24">
+        <div className="mx-auto max-w-3xl space-y-5 text-center text-base text-muted-foreground sm:text-left">
           <p>{t("about_p1")}</p>
           <p>{t("about_p2")}</p>
 

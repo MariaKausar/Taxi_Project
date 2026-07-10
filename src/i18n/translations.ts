@@ -24,7 +24,9 @@ export const translations = {
   hero_cta_book: { de: "Fahrt buchen", en: "Book a Ride" },
   hero_cta_call: { de: "Jetzt anrufen", en: "Call Now" },
   hero_stat_available: { de: "Verfügbar", en: "Available" },
-  hero_stat_reviews: { de: "1.000+ Bewertungen", en: "1,000+ reviews" },
+  hero_stat_reviews: { de: "Kundenbewertungen", en: "Customer Reviews" },
+  hero_stat_safe_value: { de: "Sicher &", en: "Safe &" },
+  hero_stat_safe: { de: "Zuverlässig", en: "Reliable" },
 
   // Trust bar
   trust_licensed: { de: "Lizenzierter Taxibetrieb", en: "Licensed Taxi Operator" },
