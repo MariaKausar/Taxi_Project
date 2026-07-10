@@ -95,9 +95,8 @@ function Hero() {
             </a>
           </div>
 
-          <div className="mt-10 grid max-w-md grid-cols-3 gap-4 border-t border-white/10 pt-8">
+          <div className="mt-10 grid max-w-sm grid-cols-2 gap-4 border-t border-white/10 pt-8">
             <HeroStat value="24/7" label={t("hero_stat_available")} />
-            <HeroStat value="5 min" label={t("hero_stat_arrival")} />
             <HeroStat value="4.9★" label={t("hero_stat_reviews")} />
           </div>
         </div>

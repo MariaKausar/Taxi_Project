@@ -16,7 +16,7 @@ export const translations = {
   },
   hero_title_pre: { de: "Buchen Sie Ihr Taxi in ", en: "Book your taxi in " },
   hero_title_city: { de: "Esslingen am Neckar", en: "Esslingen am Neckar" },
-  hero_title_post: { de: " in wenigen Minuten.", en: " in minutes." },
+  hero_title_post: { de: " — einfach & zuverlässig.", en: " — simple and reliable." },
   hero_subtitle: {
     de: "24/7 Taxiservice · Flughafentransfer · Geschäftsreisen · Lokale & Fernfahrten. Professionelle Fahrer und saubere, komfortable Fahrzeuge.",
     en: "24/7 taxi service · Airport transfers · Business travel · Local & long-distance rides. Professional drivers and clean, comfortable vehicles.",
@@ -24,7 +24,6 @@ export const translations = {
   hero_cta_book: { de: "Fahrt buchen", en: "Book a Ride" },
   hero_cta_call: { de: "Jetzt anrufen", en: "Call Now" },
   hero_stat_available: { de: "Verfügbar", en: "Available" },
-  hero_stat_arrival: { de: "Ø Ankunft", en: "Avg. arrival" },
   hero_stat_reviews: { de: "1.000+ Bewertungen", en: "1,000+ reviews" },
 
   // Trust bar
@@ -73,7 +72,7 @@ export const translations = {
   why_pay: { de: "Karte & Bar", en: "Card & Cash" },
   why_online: { de: "Online-Buchung", en: "Online Booking" },
   why_airport: { de: "Flughafen-Spezialisten", en: "Airport Specialists" },
-  why_fast: { de: "Schnelle Ankunft", en: "Fast Arrivals" },
+  why_fast: { de: "Zuverlässiger Service", en: "Reliable Service" },
   why_secure: { de: "Sichere Zahlung", en: "Secure Payments" },
 
   // How it works
@@ -95,7 +94,7 @@ export const translations = {
   role_wedding: { de: "Hochzeitsgast", en: "Wedding guest" },
   role_flyer: { de: "Vielflieger", en: "Frequent flyer" },
   test_1: { de: "Immer pünktlich, saubere Autos und freundliche Fahrer. Mein Taxi in Esslingen.", en: "Always on time, clean cars and friendly drivers. My go-to taxi in Esslingen." },
-  test_2: { de: "Ausgezeichneter Flughafentransfer. Nachts gebucht, Fahrer war in 6 Minuten da.", en: "Excellent airport transfer service. Booked at midnight, driver arrived in 6 minutes." },
+  test_2: { de: "Ausgezeichneter Flughafentransfer. Nachts gebucht — pünktlich und zuverlässig abgeholt.", en: "Excellent airport transfer service. Booked at midnight — picked up on time and without hassle." },
   test_3: { de: "Professionell und hilfsbereit — sogar mit dem Gepäck geholfen und gute Tipps gegeben.", en: "Professional and so helpful — even helped us with our luggage and gave great tips on the city." },
   test_4: { de: "Wir nutzen sie wöchentlich für Kundenabholungen. Zuverlässigkeit ohnegleichen.", en: "We use them weekly for client pickups. Reliability is second to none." },
   test_5: {
@@ -108,7 +107,7 @@ export const translations = {
   faq_eyebrow: { de: "FAQ", en: "FAQ" },
   faq_title: { de: "Häufig gestellte Fragen", en: "Frequently asked questions" },
   faq_q1: { de: "Wie buche ich ein Taxi?", en: "How do I book a taxi?" },
-  faq_a1: { de: "Buchen Sie online über unser Formular, rufen Sie uns unter +49 1785 183559 an oder schreiben Sie uns auf WhatsApp. Die meisten Fahrten werden in unter einer Minute bestätigt.", en: "Book online through our form, call us at +49 1785 183559, or message us on WhatsApp. Most rides are confirmed in under a minute." },
+  faq_a1: { de: "Buchen Sie online über unser Formular, rufen Sie uns unter +49 1785 183559 an oder schreiben Sie uns auf WhatsApp. Die meisten Fahrten werden schnell bestätigt.", en: "Book online through our form, call us at +49 1785 183559, or message us on WhatsApp. Most rides are confirmed quickly." },
   faq_q2: { de: "Sind Sie 24/7 verfügbar?", en: "Are you available 24/7?" },
   faq_a2: { de: "Ja — jeden Tag im Jahr, auch an Feiertagen. Ein echter Disponent nimmt Ihren Anruf an.", en: "Yes — every day of the year, including holidays. A real dispatcher answers your call." },
   faq_q3: { de: "Kann ich mit Karte bezahlen?", en: "Can I pay by card?" },
@@ -122,7 +121,7 @@ export const translations = {
 
   // Contact CTA
   cta_title: { de: "Brauchen Sie jetzt ein Taxi?", en: "Need a taxi right now?" },
-  cta_desc: { de: "Unsere Zentrale ist 24/7 online. Rufen Sie an, buchen Sie online oder schreiben Sie auf WhatsApp.", en: "Our dispatch is online 24/7. Call us, book online, or message on WhatsApp — we'll be at your door in minutes." },
+  cta_desc: { de: "Unsere Zentrale ist 24/7 online. Rufen Sie an, buchen Sie online oder schreiben Sie auf WhatsApp.", en: "Our dispatch is online 24/7. Call us, book online, or message on WhatsApp." },
   cta_book_online: { de: "Online buchen", en: "Book Online" },
 
   // Booking form
@@ -210,10 +209,10 @@ export const translations = {
 
   // Booking page
   booking_eyebrow: { de: "Online-Buchung", en: "Online Booking" },
-  booking_title: { de: "Buchen Sie Ihre Fahrt in unter einer Minute", en: "Book your ride in under a minute" },
+  booking_title: { de: "Buchen Sie Ihre Fahrt online", en: "Book your ride online" },
   booking_desc: { de: "Füllen Sie die Daten aus und wir schicken den nächsten verfügbaren Fahrer zu Ihrem Abholort.", en: "Fill in the details and we'll dispatch the nearest driver to your pickup location." },
   booking_fast_t: { de: "Schnelle Vermittlung", en: "Fast dispatch" },
-  booking_fast_d: { de: "Ø Abholung in 5–8 Minuten überall in Esslingen.", en: "Average pickup in 5–8 minutes anywhere in Esslingen." },
+  booking_fast_d: { de: "Wir vermitteln den nächsten verfügbaren Fahrer in Esslingen und Umgebung.", en: "We dispatch the nearest available driver across Esslingen and the surrounding area." },
   booking_pay_t: { de: "Zahlen wie Sie möchten", en: "Pay your way" },
   booking_pay_d: { de: "Bargeld, alle gängigen Karten, kontaktlos sowie Apple/Google Pay.", en: "Cash, all major cards, contactless and Apple/Google Pay accepted." },
   booking_sec_t: { de: "Sicher & versichert", en: "Secure & insured" },

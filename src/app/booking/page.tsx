@@ -5,7 +5,7 @@ import { BookingPage } from "@/components/pages/BookingPage";
 export const metadata: Metadata = {
   title: "Taxi online buchen Esslingen – 24/7 Buchung",
   description:
-    "Taxi in Esslingen am Neckar online buchen in unter einer Minute. 24/7 Taxizentrale, schnelle Abholung, professionelle Fahrer. Flughafentransfer & Krankenfahrten.",
+    "Taxi in Esslingen am Neckar online buchen. 24/7 Taxizentrale, professionelle Fahrer, einfache Buchung. Flughafentransfer & Krankenfahrten.",
   keywords: [
     "Taxi online buchen Esslingen",
     "Taxi buchen Esslingen am Neckar",
