@@ -11,33 +11,19 @@ export function AboutPage() {
   return (
     <Layout>
       <Section className="bg-secondary/40 pt-14 sm:pt-20">
-        <SectionHeader eyebrow={t("about_eyebrow")} title={t("about_title")} description={t("about_desc")} />
+        <SectionHeader eyebrow={t("about_eyebrow")} title={t("about_title")} />
       </Section>
 
       <Section>
-        <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
-          <div className="space-y-4 text-base text-muted-foreground">
-            <p>{t("about_p1")}</p>
-            <p>
-              {t("about_p2_pre")}
-              <strong className="text-foreground">{t("about_p2_strong")}</strong>
-              {t("about_p2_post")}
-            </p>
-            <p>{t("about_p3")}</p>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { v: "27+", l: t("about_stat_years") },
-              { v: "20+", l: t("about_stat_vehicles") },
-              { v: "180k+", l: t("about_stat_rides") },
-              { v: "4.9★", l: t("about_stat_rating") },
-            ].map((s) => (
-              <div key={s.l} className="rounded-2xl border border-border bg-card p-6 text-center shadow-soft">
-                <div className="font-display text-3xl font-bold text-brand-foreground">{s.v}</div>
-                <div className="mt-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{s.l}</div>
-              </div>
-            ))}
-          </div>
+        <div className="mx-auto max-w-3xl space-y-5 text-base text-muted-foreground">
+          <p>{t("about_p1")}</p>
+          <p>{t("about_p2")}</p>
+
+          <h2 className="pt-4 font-display text-2xl font-bold text-foreground sm:text-3xl">
+            {t("about_story_title")}
+          </h2>
+          <p>{t("about_story_p1")}</p>
+          <p>{t("about_story_p2")}</p>
         </div>
       </Section>
 

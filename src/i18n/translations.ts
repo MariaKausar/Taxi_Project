@@ -164,17 +164,24 @@ export const translations = {
 
   // About
   about_eyebrow: { de: "Über uns", en: "About Us" },
-  about_title: { de: "Ein lokaler Taxiservice, der auf Vertrauen aufgebaut ist", en: "A local taxi service, built on trust" },
-  about_desc: { de: "1998 von einer Esslinger Familie gegründet, sind wir heute einer der vertrauenswürdigsten Taxibetreiber der Region — ohne den persönlichen Bezug zu verlieren.", en: "Founded in 1998 by an Esslingen family, we've grown into one of the most trusted taxi operators in the region — without losing the personal touch." },
-  about_p1: { de: "Was 1998 mit einem einzigen gelben Mercedes begann, ist heute eine Flotte von über 20 Fahrzeugen — Standardtaxis, Premium-Limousinen und geräumige Vans für Gruppen und Gepäck.", en: "What started as a single yellow Mercedes in 1998 is today a fleet of more than 20 vehicles — standard taxis, premium business sedans and roomy vans for groups and luggage." },
-  about_p2_pre: { de: "Wir arbeiten mit einem festen Team von ", en: "We work with a tight team of " },
-  about_p2_strong: { de: "lizenzierten lokalen Fahrern", en: "licensed local drivers" },
-  about_p2_post: { de: ", die jede Straße, jede Abkürzung und jeden Fahrplan in Esslingen und Stuttgart kennen. Die meisten sind seit über einem Jahrzehnt bei uns.", en: " who know every street, every shortcut and every train timetable in Esslingen and Stuttgart. Most have been with us for over a decade." },
-  about_p3: { de: "Unsere Mission ist einfach: Jeden Fahrgast sicher und pünktlich ans Ziel zu bringen — 24 Stunden am Tag, an jedem Tag des Jahres.", en: "Our mission is simple: get every passenger to their destination safely and on time — 24 hours a day, every day of the year." },
-  about_stat_years: { de: "Jahre im Service", en: "Years of service" },
-  about_stat_vehicles: { de: "Fahrzeuge im Bestand", en: "Vehicles in fleet" },
-  about_stat_rides: { de: "Fahrten pro Jahr", en: "Rides per year" },
-  about_stat_rating: { de: "Ø Bewertung", en: "Average rating" },
+  about_title: { de: "Ein Taxiservice, dem Sie vertrauen können", en: "A Taxi Service You Can Trust" },
+  about_p1: {
+    de: "Bei Taxi Team Esslingen setzen wir auf sichere, zuverlässige und komfortable Beförderung bei jeder Fahrt. Ob kurze Strecken in der Stadt, Flughafentransfer, Geschäftsfahrt oder Fernfahrt — unsere professionellen Fahrer bringen Sie pünktlich und mit vollem Vertrauen ans Ziel.",
+    en: "At Taxi Team Esslingen, we are committed to providing safe, reliable, and comfortable transportation for every journey. Whether you need a quick trip across town, an airport transfer, a business ride, or long-distance travel, our professional drivers are dedicated to getting you to your destination on time and with complete peace of mind.",
+  },
+  about_p2: {
+    de: "Kundenzufriedenheit steht bei uns im Mittelpunkt. Mit sauberen Fahrzeugen, erfahrenen Fahrern und einem Fokus auf Pünktlichkeit möchten wir jede Fahrt angenehm, unkompliziert und stressfrei gestalten.",
+    en: "Customer satisfaction is at the heart of everything we do. With clean vehicles, experienced drivers, and a focus on punctuality, we strive to make every ride smooth, convenient, and stress-free.",
+  },
+  about_story_title: { de: "Unsere Geschichte", en: "Our Story" },
+  about_story_p1: {
+    de: "Taxi Team Esslingen wurde mit einem einfachen Ziel gegründet: zuverlässigen Transport anzubieten, auf den Menschen jeden Tag zählen können. Seit unseren Anfängen haben wir unseren Ruf durch Professionalität, Pünktlichkeit und exzellenten Kundenservice aufgebaut.",
+    en: "Taxi Team Esslingen was founded with a simple goal: to offer dependable transportation that people can rely on every day. Since our beginning, we have built our reputation through professionalism, punctuality, and exceptional customer service.",
+  },
+  about_story_p2: {
+    de: "Unsere Mission ist es, Reisen für Privatpersonen, Familien und Unternehmen einfacher, sicherer und komfortabler zu machen. Während wir wachsen, bleiben wir verpflichtet, hochwertige Taxidienste zu leisten und dauerhafte Kundenbeziehungen auf Vertrauen, Zuverlässigkeit und Sorgfalt aufzubauen.",
+    en: "Our mission is to make travel easier, safer, and more comfortable for individuals, families, and businesses. As we continue to grow, we remain committed to delivering high-quality taxi services while building lasting relationships with our customers based on trust, reliability, and care.",
+  },
   about_values_eyebrow: { de: "Unsere Werte", en: "Our Values" },
   about_values_title: { de: "Wofür wir stehen", en: "What we stand for" },
   about_val_care_t: { de: "Fürsorge", en: "Care" },
