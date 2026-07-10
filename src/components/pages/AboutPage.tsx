@@ -10,20 +10,29 @@ export function AboutPage() {
   const { t } = useT();
   return (
     <Layout>
-      <Section className="bg-secondary/40 pt-14 sm:pt-20">
-        <SectionHeader eyebrow={t("about_eyebrow")} title={t("about_title")} />
-      </Section>
+      <Section className="bg-secondary/40 pt-14 pb-16 sm:pt-20 sm:pb-20">
+        <div className="mx-auto max-w-3xl">
+          <div className="mb-6">
+            <div className="mb-3">
+              <span className="inline-flex items-center rounded-full bg-brand/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-brand-foreground">
+                {t("about_eyebrow")}
+              </span>
+            </div>
+            <h1 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl text-balance-tight">
+              {t("about_title")}
+            </h1>
+          </div>
 
-      <Section>
-        <div className="mx-auto max-w-3xl space-y-5 text-base text-muted-foreground">
-          <p>{t("about_p1")}</p>
-          <p>{t("about_p2")}</p>
+          <div className="space-y-5 text-base text-muted-foreground">
+            <p>{t("about_p1")}</p>
+            <p>{t("about_p2")}</p>
 
-          <h2 className="pt-4 font-display text-2xl font-bold text-foreground sm:text-3xl">
-            {t("about_story_title")}
-          </h2>
-          <p>{t("about_story_p1")}</p>
-          <p>{t("about_story_p2")}</p>
+            <h2 className="pt-2 font-display text-2xl font-bold text-foreground sm:text-3xl">
+              {t("about_story_title")}
+            </h2>
+            <p>{t("about_story_p1")}</p>
+            <p>{t("about_story_p2")}</p>
+          </div>
         </div>
       </Section>
 
