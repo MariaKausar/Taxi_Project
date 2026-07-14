@@ -44,7 +44,7 @@ export const translations = {
   },
   svc_local_t: { de: "Lokaler Taxiservice", en: "Local Taxi Service" },
   svc_local_d: { de: "Schnelle Fahrten in Esslingen und Umgebung.", en: "Quick rides within Esslingen and surrounding districts." },
-  svc_voucher_t: { de: "Medizinischer Transport", en: "Medical Transport" },
+  svc_voucher_t: { de: "Krankenfahrten", en: "Medical Transport" },
   svc_voucher_d: {
     de: "Sichere, zuverlässige Fahrten zu Terminen und Therapien.",
     en: "Safe, reliable rides to appointments and therapy.",
