@@ -71,7 +71,7 @@ export const translations = {
   why_24: { de: "24/7 verfügbar", en: "Available 24/7" },
   why_pro: { de: "Professionelle Fahrer", en: "Professional Drivers" },
   why_clean: { de: "Saubere Fahrzeuge", en: "Clean Vehicles" },
-  why_pay: { de: "Karte & Bar", en: "Card & Cash" },
+  why_pay: { de: "Karte & Barzahlung", en: "Card & Cash" },
   why_online: { de: "Online-Buchung", en: "Online Booking" },
   why_airport: { de: "Flughafen-Spezialisten", en: "Airport Specialists" },
   why_fast: { de: "Zuverlässiger Service", en: "Reliable Service" },
